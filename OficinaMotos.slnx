@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="src/OficinaMotos.API/OficinaMotos.API.csproj" Id="438e3f1b-9c61-4158-bbe6-b54a7c9bfe62" />
+  <Project Path="src/OficinaMotos.Application/OficinaMotos.Application.csproj" />
+  <Project Path="src/OficinaMotos.Domain/OficinaMotos.Domain.csproj" />
+  <Project Path="src/OficinaMotos.Infrastructure/OficinaMotos.Infrastructure.csproj" Id="16d601c2-3709-4509-9c4a-64b83d5db976" />
+</Solution>

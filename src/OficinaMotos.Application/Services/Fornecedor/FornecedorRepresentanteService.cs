@@ -1,0 +1,69 @@
+using AutoMapper;
+using OficinaMotos.Application.DTOs.Requests.Fornecedor;
+using OficinaMotos.Application.DTOs.Responses.Fornecedor;
+using OficinaMotos.Application.Interfaces.Fornecedor;
+using OficinaMotos.Domain.Entities;
+using OficinaMotos.Domain.Interfaces.Repositories.Fornecedor;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace OficinaMotos.Application.Services.Fornecedor
+{
+    public class FornecedorRepresentanteService : IFornecedorRepresentanteService
+    {
+        private readonly IFornecedorRepresentanteRepository _repository;
+        private readonly IMapper _mapper;
+
+        public FornecedorRepresentanteService(IFornecedorRepresentanteRepository repository, IMapper mapper)
+        {
+            _repository = repository;
+            _mapper = mapper;
+        }
+
+        public async Task<List<FornecedorRepresentanteResponseDTO>> GetAllAsync()
+        {
+            var items = await _repository.GetAllAsync();
+            return _mapper.Map<List<FornecedorRepresentanteResponseDTO>>(items);
+        }
+
+        public async Task<FornecedorRepresentanteResponseDTO?> GetByIdAsync(long id)
+        {
+            var item = await _repository.GetByIdAsync(id);
+            return _mapper.Map<FornecedorRepresentanteResponseDTO?>(item);
+        }
+
+        public async Task<FornecedorRepresentanteResponseDTO> CreateAsync(CreateFornecedorRepresentanteDTO request)
+        {
+            var entity = _mapper.Map<FornecedorRepresentante>(request);
+            var created = await _repository.AddAsync(entity);
+            return _mapper.Map<FornecedorRepresentanteResponseDTO>(created);
+        }
+
+        public async Task<FornecedorRepresentanteResponseDTO?> UpdateAsync(long id, UpdateFornecedorRepresentanteDTO request)
+        {
+            var entity = await _repository.GetByIdAsync(id);
+            if (entity == null) return null;
+
+            entity.FornecedorId = request.FornecedorId;
+            entity.Nome = request.Nome;
+            entity.Cargo = request.Cargo;
+            entity.Email = request.Email;
+            entity.Telefone = request.Telefone;
+            entity.Celular = request.Celular;
+            entity.PreferenciaContato = request.PreferenciaContato;
+            entity.Principal = request.Principal;
+            entity.Observacoes = request.Observacoes;
+            entity.SetUpdated();
+
+            await _repository.UpdateAsync(entity);
+            return _mapper.Map<FornecedorRepresentanteResponseDTO>(entity);
+        }
+
+        public async Task<bool> DeleteAsync(long id)
+        {
+            if (!await _repository.ExistsAsync(id)) return false;
+            await _repository.DeleteAsync(id);
+            return true;
+        }
+    }
+}

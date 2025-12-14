@@ -1,0 +1,16 @@
+using FluentValidation;
+using OficinaMotos.Application.DTOs.Requests.OrdemServico;
+
+namespace OficinaMotos.Application.Validators.OrdemServico
+{
+    public class CreateOrdemServicoPagamentoValidator : AbstractValidator<CreateOrdemServicoPagamentoDTO>
+    {
+        public CreateOrdemServicoPagamentoValidator()
+        {
+            RuleFor(x => x.OrdemServicoId).GreaterThan(0);
+            RuleFor(x => x.Status).NotEmpty().MaximumLength(50);
+            RuleFor(x => x.Metodo).MaximumLength(120);
+            RuleFor(x => x.Observacao).MaximumLength(240);
+        }
+    }
+}

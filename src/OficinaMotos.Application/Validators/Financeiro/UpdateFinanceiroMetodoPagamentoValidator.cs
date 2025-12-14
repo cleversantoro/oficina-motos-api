@@ -1,0 +1,14 @@
+using FluentValidation;
+using OficinaMotos.Application.DTOs.Requests.Financeiro;
+
+namespace OficinaMotos.Application.Validators.Financeiro
+{
+    public class UpdateFinanceiroMetodoPagamentoValidator : AbstractValidator<UpdateFinanceiroMetodoPagamentoDTO>
+    {
+        public UpdateFinanceiroMetodoPagamentoValidator()
+        {
+            RuleFor(x => x.Nome).NotEmpty().MaximumLength(160);
+            RuleFor(x => x.Descricao).MaximumLength(300);
+        }
+    }
+}

@@ -1,0 +1,201 @@
+using AutoMapper;
+using OficinaMotos.Application.DTOs.Requests;
+using OficinaMotos.Application.DTOs.Requests.Cliente;
+using OficinaMotos.Application.DTOs.Requests.Estoque;
+using OficinaMotos.Application.DTOs.Requests.Financeiro;
+using OficinaMotos.Application.DTOs.Requests.Fornecedor;
+using OficinaMotos.Application.DTOs.Requests.Mecanico;
+using OficinaMotos.Application.DTOs.Requests.OrdemServico;
+using OficinaMotos.Application.DTOs.Requests.Veiculo;
+using OficinaMotos.Application.DTOs.Responses;
+using OficinaMotos.Application.DTOs.Responses.Cliente;
+using OficinaMotos.Application.DTOs.Responses.Estoque;
+using OficinaMotos.Application.DTOs.Responses.Financeiro;
+using OficinaMotos.Application.DTOs.Responses.Fornecedor;
+using OficinaMotos.Application.DTOs.Responses.Mecanico;
+using OficinaMotos.Application.DTOs.Responses.OrdemServicoDTO;
+using OficinaMotos.Application.DTOs.Responses.VeiculoDTO;
+using OficinaMotos.Domain.Entities;
+
+namespace OficinaMotos.Application.Mappings
+{
+    public class DomainToDTOMappingProfile : Profile
+    {
+        public DomainToDTOMappingProfile()
+        {
+            CreateMap<Cliente, ClienteResponseDTO>();
+
+            CreateMap<CreateClienteDTO, Cliente>()
+                .ForMember(dest => dest.NomeExibicao, opt => opt.MapFrom(src => src.Nome))
+                .ForMember(dest => dest.Documento, opt => opt.MapFrom(src => src.Cpf))
+                .ForMember(dest => dest.Tipo, opt => opt.MapFrom(_ => 1))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => 1))
+                .ForMember(dest => dest.Vip, opt => opt.MapFrom(_ => false));
+                //.ForMember(dest => dest.PessoaFisica, opt => opt.MapFrom(src => new ClientePf { Cpf = src.Cpf }));
+            CreateMap<ClienteOrigem, ClienteOrigemResponseDTO>();
+            CreateMap<CreateClienteOrigemDTO, ClienteOrigem>();
+
+            CreateMap<ClienteAnexo, ClienteAnexoResponseDTO>();
+            CreateMap<CreateClienteAnexoDTO, ClienteAnexo>();
+
+            CreateMap<ClienteContato, ClienteContatoResponseDTO>();
+            CreateMap<CreateClienteContatoDTO, ClienteContato>();
+
+            CreateMap<ClienteDocumento, ClienteDocumentoResponseDTO>();
+            CreateMap<CreateClienteDocumentoDTO, ClienteDocumento>();
+
+            CreateMap<ClienteEndereco, ClienteEnderecoResponseDTO>();
+            CreateMap<CreateClienteEnderecoDTO, ClienteEndereco>();
+
+            CreateMap<ClienteFinanceiro, ClienteFinanceiroResponseDTO>();
+            CreateMap<CreateClienteFinanceiroDTO, ClienteFinanceiro>();
+
+            CreateMap<ClienteIndicacao, ClienteIndicacaoResponseDTO>();
+            CreateMap<CreateClienteIndicacaoDTO, ClienteIndicacao>();
+
+            CreateMap<ClienteLgpdConsentimento, ClienteLgpdConsentimentoResponseDTO>();
+            CreateMap<CreateClienteLgpdConsentimentoDTO, ClienteLgpdConsentimento>();
+
+            CreateMap<ClientePf, ClientePfResponseDTO>();
+            CreateMap<CreateClientePfDTO, ClientePf>();
+
+            CreateMap<ClientePj, ClientePjResponseDTO>();
+            CreateMap<CreateClientePjDTO, ClientePj>();
+
+            CreateMap<EstoqueCategoria, EstoqueCategoriaResponseDTO>();
+            CreateMap<CreateEstoqueCategoriaDTO, EstoqueCategoria>();
+
+            CreateMap<EstoqueFabricante, EstoqueFabricanteResponseDTO>();
+            CreateMap<CreateEstoqueFabricanteDTO, EstoqueFabricante>();
+
+            CreateMap<EstoqueLocalizacao, EstoqueLocalizacaoResponseDTO>();
+            CreateMap<CreateEstoqueLocalizacaoDTO, EstoqueLocalizacao>();
+
+            CreateMap<EstoquePeca, EstoquePecaResponseDTO>();
+            CreateMap<CreateEstoquePecaDTO, EstoquePeca>();
+
+            CreateMap<EstoqueMovimentacao, EstoqueMovimentacaoResponseDTO>();
+            CreateMap<CreateEstoqueMovimentacaoDTO, EstoqueMovimentacao>();
+
+            CreateMap<EstoquePecaAnexo, EstoquePecaAnexoResponseDTO>();
+            CreateMap<CreateEstoquePecaAnexoDTO, EstoquePecaAnexo>();
+
+            CreateMap<EstoquePecaFornecedor, EstoquePecaFornecedorResponseDTO>();
+            CreateMap<CreateEstoquePecaFornecedorDTO, EstoquePecaFornecedor>();
+
+            CreateMap<EstoquePecaHistorico, EstoquePecaHistoricoResponseDTO>();
+            CreateMap<CreateEstoquePecaHistoricoDTO, EstoquePecaHistorico>();
+
+            CreateMap<FinanceiroMetodoPagamento, FinanceiroMetodoPagamentoResponseDTO>();
+            CreateMap<CreateFinanceiroMetodoPagamentoDTO, FinanceiroMetodoPagamento>();
+
+            CreateMap<FinanceiroPagamento, FinanceiroPagamentoResponseDTO>();
+            CreateMap<CreateFinanceiroPagamentoDTO, FinanceiroPagamento>();
+
+            CreateMap<FinanceiroAnexo, FinanceiroAnexoResponseDTO>();
+            CreateMap<CreateFinanceiroAnexoDTO, FinanceiroAnexo>();
+
+            CreateMap<FinanceiroContaPagar, FinanceiroContaPagarResponseDTO>();
+            CreateMap<CreateFinanceiroContaPagarDTO, FinanceiroContaPagar>();
+
+            CreateMap<FinanceiroContaReceber, FinanceiroContaReceberResponseDTO>();
+            CreateMap<CreateFinanceiroContaReceberDTO, FinanceiroContaReceber>();
+
+            CreateMap<FinanceiroHistorico, FinanceiroHistoricoResponseDTO>();
+            CreateMap<CreateFinanceiroHistoricoDTO, FinanceiroHistorico>();
+
+            CreateMap<FinanceiroLancamento, FinanceiroLancamentoResponseDTO>();
+            CreateMap<CreateFinanceiroLancamentoDTO, FinanceiroLancamento>();
+
+            CreateMap<OrdemServico, OrdemServicoResponseDTO>();
+            CreateMap<CreateOrdemServicoDTO, OrdemServico>();
+
+            CreateMap<OrdemServicoAnexo, OrdemServicoAnexoResponseDTO>();
+            CreateMap<CreateOrdemServicoAnexoDTO, OrdemServicoAnexo>();
+
+            CreateMap<OrdemServicoAvaliacao, OrdemServicoAvaliacaoResponseDTO>();
+            CreateMap<CreateOrdemServicoAvaliacaoDTO, OrdemServicoAvaliacao>();
+
+            CreateMap<OrdemServicoChecklist, OrdemServicoChecklistResponseDTO>();
+            CreateMap<CreateOrdemServicoChecklistDTO, OrdemServicoChecklist>();
+
+            CreateMap<OrdemServicoItem, OrdemServicoItemResponseDTO>();
+            CreateMap<CreateOrdemServicoItemDTO, OrdemServicoItem>();
+
+            CreateMap<OrdemServicoObservacao, OrdemServicoObservacaoResponseDTO>();
+            CreateMap<CreateOrdemServicoObservacaoDTO, OrdemServicoObservacao>();
+
+            CreateMap<OrdemServicoHistorico, OrdemServicoHistoricoResponseDTO>();
+            CreateMap<CreateOrdemServicoHistoricoDTO, OrdemServicoHistorico>();
+
+            CreateMap<OrdemServicoPagamento, OrdemServicoPagamentoResponseDTO>();
+            CreateMap<CreateOrdemServicoPagamentoDTO, OrdemServicoPagamento>();
+
+            CreateMap<Mecanico, MecanicoResponseDTO>();
+            CreateMap<CreateMecanicoDTO, Mecanico>();
+
+            CreateMap<MecanicoEspecialidade, MecanicoEspecialidadeResponseDTO>();
+            CreateMap<CreateMecanicoEspecialidadeDTO, MecanicoEspecialidade>();
+
+            CreateMap<MecanicoCertificacao, MecanicoCertificacaoResponseDTO>();
+            CreateMap<CreateMecanicoCertificacaoDTO, MecanicoCertificacao>();
+
+            CreateMap<MecanicoContato, MecanicoContatoResponseDTO>();
+            CreateMap<CreateMecanicoContatoDTO, MecanicoContato>();
+
+            CreateMap<MecanicoDisponibilidade, MecanicoDisponibilidadeResponseDTO>();
+            CreateMap<CreateMecanicoDisponibilidadeDTO, MecanicoDisponibilidade>();
+
+            CreateMap<MecanicoDocumento, MecanicoDocumentoResponseDTO>();
+            CreateMap<CreateMecanicoDocumentoDTO, MecanicoDocumento>();
+
+            CreateMap<MecanicoEndereco, MecanicoEnderecoResponseDTO>();
+            CreateMap<CreateMecanicoEnderecoDTO, MecanicoEndereco>();
+
+            CreateMap<MecanicoEspecialidadeRel, MecanicoEspecialidadeRelResponseDTO>();
+            CreateMap<CreateMecanicoEspecialidadeRelDTO, MecanicoEspecialidadeRel>();
+
+            CreateMap<MecanicoExperiencia, MecanicoExperienciaResponseDTO>();
+            CreateMap<CreateMecanicoExperienciaDTO, MecanicoExperiencia>();
+
+            CreateMap<Fornecedor, FornecedorResponseDTO>();
+            CreateMap<CreateFornecedorDTO, Fornecedor>();
+
+            CreateMap<FornecedorSegmento, FornecedorSegmentoResponseDTO>();
+            CreateMap<CreateFornecedorSegmentoDTO, FornecedorSegmento>();
+
+            CreateMap<FornecedorSegmentoRel, FornecedorSegmentoRelResponseDTO>();
+            CreateMap<CreateFornecedorSegmentoRelDTO, FornecedorSegmentoRel>();
+
+            CreateMap<FornecedorEndereco, FornecedorEnderecoResponseDTO>();
+            CreateMap<CreateFornecedorEnderecoDTO, FornecedorEndereco>();
+
+            CreateMap<FornecedorContato, FornecedorContatoResponseDTO>();
+            CreateMap<CreateFornecedorContatoDTO, FornecedorContato>();
+
+            CreateMap<FornecedorRepresentante, FornecedorRepresentanteResponseDTO>();
+            CreateMap<CreateFornecedorRepresentanteDTO, FornecedorRepresentante>();
+
+            CreateMap<FornecedorBanco, FornecedorBancoResponseDTO>();
+            CreateMap<CreateFornecedorBancoDTO, FornecedorBanco>();
+
+            CreateMap<FornecedorDocumento, FornecedorDocumentoResponseDTO>();
+            CreateMap<CreateFornecedorDocumentoDTO, FornecedorDocumento>();
+
+            CreateMap<FornecedorCertificacao, FornecedorCertificacaoResponseDTO>();
+            CreateMap<CreateFornecedorCertificacaoDTO, FornecedorCertificacao>();
+
+            CreateMap<FornecedorAvaliacao, FornecedorAvaliacaoResponseDTO>();
+            CreateMap<CreateFornecedorAvaliacaoDTO, FornecedorAvaliacao>();
+
+            CreateMap<Veiculo, VeiculoResponseDTO>();
+            CreateMap<CreateVeiculoDTO, Veiculo>();
+
+            CreateMap<VeiculoMarca, VeiculoMarcaResponseDTO>();
+            CreateMap<CreateVeiculoMarcaDTO, VeiculoMarca>();
+
+            CreateMap<VeiculoModelo, VeiculoModeloResponseDTO>();
+            CreateMap<CreateVeiculoModeloDTO, VeiculoModelo>();
+        }
+    }
+}

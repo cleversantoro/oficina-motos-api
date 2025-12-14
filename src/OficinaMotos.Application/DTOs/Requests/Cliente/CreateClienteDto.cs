@@ -1,0 +1,12 @@
+﻿using System.ComponentModel.DataAnnotations; // Usaremos FluentValidation, mas DataAnnotations ajudam no Swagger
+
+namespace OficinaMotos.Application.DTOs.Requests.Cliente
+{
+    public class CreateClienteDTO
+    {
+        public string Nome { get; set; } = string.Empty;
+        public string Cpf { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Telefone { get; set; } = string.Empty;
+    }
+}
