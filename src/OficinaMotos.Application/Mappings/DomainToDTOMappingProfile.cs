@@ -23,7 +23,10 @@ namespace OficinaMotos.Application.Mappings
     {
         public DomainToDTOMappingProfile()
         {
-            CreateMap<Cliente, ClienteResponseDTO>();
+            CreateMap<Cliente, ClienteResponseDTO>()
+                .ForMember(dest => dest.Tipo, opt => opt.MapFrom(src => (int)src.Tipo))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => (int)src.Status))
+                .ForMember(dest => dest.OrigemDescricao, opt => opt.MapFrom(src => src.Origem != null ? src.Origem.Nome : null));
 
             CreateMap<CreateClienteDTO, Cliente>()
                 .ForMember(dest => dest.NomeExibicao, opt => opt.MapFrom(src => src.Nome))
@@ -31,7 +34,13 @@ namespace OficinaMotos.Application.Mappings
                 .ForMember(dest => dest.Tipo, opt => opt.MapFrom(_ => 1))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => 1))
                 .ForMember(dest => dest.Vip, opt => opt.MapFrom(_ => false));
-                //.ForMember(dest => dest.PessoaFisica, opt => opt.MapFrom(src => new ClientePf { Cpf = src.Cpf }));
+            //.ForMember(dest => dest.PessoaFisica, opt => opt.MapFrom(src => new ClientePf { Cpf = src.Cpf }));
+
+            CreateMap<Cliente, ClienteResponseTableDTO>()
+                .ForMember(dest => dest.TipoDescricao, opt => opt.MapFrom(src => (int)src.Tipo == 1 ? "Pessoa Física" : "Pessoa Jurídica"))
+                .ForMember(dest => dest.StatusDescricao, opt => opt.MapFrom(src => (int)src.Status == 0 ? "Cliente Inativo" : GetStatus((int)src.Status))); 
+                //.ForMember(dest => dest.OrigemDescricao, opt => opt.MapFrom(src => src.Origem != null ? src.Origem.Nome : null));
+
             CreateMap<ClienteOrigem, ClienteOrigemResponseDTO>();
             CreateMap<CreateClienteOrigemDTO, ClienteOrigem>();
 
@@ -196,6 +205,26 @@ namespace OficinaMotos.Application.Mappings
 
             CreateMap<VeiculoModelo, VeiculoModeloResponseDTO>();
             CreateMap<CreateVeiculoModeloDTO, VeiculoModelo>();
+        }
+
+        private string GetStatus(int status)
+        {
+            string returnValue = "Desconhecido";
+
+            switch (status)
+            {
+                case 1:
+                    returnValue = "Cliente Ativo";
+                    break;
+                case 2:
+                    returnValue = "Cliente Suspenso";
+                    break;
+                case 3:
+                    returnValue = "Cliente Bloqueado";
+                    break;
+            }
+
+            return returnValue;
         }
     }
 }

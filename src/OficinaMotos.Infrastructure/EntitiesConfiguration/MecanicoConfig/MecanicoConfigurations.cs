@@ -8,12 +8,13 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.MecanicoConfig
     {
         public void Configure(EntityTypeBuilder<MecanicoEspecialidade> builder)
         {
-            builder.ToTable("mecanico_especialidades");
+            builder.ToTable("cad_mecanicos_especialidades");
             builder.HasKey(e => e.Id);
 
             builder.Property(e => e.Codigo).HasMaxLength(40).IsRequired();
             builder.Property(e => e.Nome).HasMaxLength(160).IsRequired();
             builder.Property(e => e.Descricao).HasMaxLength(300);
+            builder.Property(e => e.Ativo).HasDefaultValue(true);
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
             builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
 
@@ -32,20 +33,24 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.MecanicoConfig
     {
         public void Configure(EntityTypeBuilder<Mecanico> builder)
         {
-            builder.ToTable("mecanicos");
+            builder.ToTable("cad_mecanicos");
             builder.HasKey(e => e.Id);
 
             builder.Property(e => e.Codigo).HasMaxLength(40).IsRequired();
             builder.Property(e => e.Nome).HasMaxLength(160).IsRequired();
             builder.Property(e => e.Sobrenome).HasMaxLength(160);
-            builder.Property(e => e.NomeSocial).HasMaxLength(160);
-            builder.Property(e => e.DocumentoPrincipal).HasMaxLength(40).IsRequired();
-            builder.Property(e => e.TipoDocumento).IsRequired();
-            builder.Property(e => e.Status).HasMaxLength(50).HasDefaultValue("Ativo");
-            builder.Property(e => e.Nivel).HasMaxLength(50).HasDefaultValue("Pleno");
-            builder.Property(e => e.Observacoes).HasMaxLength(500);
+            builder.Property(e => e.NomeSocial).HasColumnName("Nome_Social").HasMaxLength(160);
+            builder.Property(e => e.DocumentoPrincipal).HasColumnName("Documento_Principal").HasMaxLength(40).IsRequired();
+            builder.Property(e => e.TipoDocumento).HasColumnName("Tipo_Documento").IsRequired();
+            builder.Property(e => e.DataNascimento).HasColumnName("Data_Nascimento");
             builder.Property(e => e.DataAdmissao).HasColumnName("Data_Admissao");
             builder.Property(e => e.DataDemissao).HasColumnName("Data_Demissao");
+            builder.Property(e => e.Status).HasMaxLength(50).HasDefaultValue("Ativo");
+            builder.Property(e => e.EspecialidadePrincipalId).HasColumnName("Especialidade_Principal_Id");
+            builder.Property(e => e.Nivel).HasMaxLength(50).HasDefaultValue("Pleno");
+            builder.Property(e => e.ValorHora).HasColumnName("Valor_Hora").HasPrecision(18, 2);
+            builder.Property(e => e.CargaHorariaSemanal).HasColumnName("Carga_Horaria_Semanal").HasDefaultValue(44);
+            builder.Property(e => e.Observacoes).HasMaxLength(500);
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
             builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
 
@@ -83,12 +88,14 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.MecanicoConfig
     {
         public void Configure(EntityTypeBuilder<MecanicoCertificacao> builder)
         {
-            builder.ToTable("mecanico_certificacoes");
+            builder.ToTable("cad_mecanicos_certificacoes");
             builder.HasKey(e => e.Id);
 
+            builder.Property(e => e.MecanicoId).HasColumnName("Mecanico_Id");
+            builder.Property(e => e.EspecialidadeId).HasColumnName("Especialidade_Id");
             builder.Property(e => e.Titulo).HasMaxLength(160).IsRequired();
             builder.Property(e => e.Instituicao).HasMaxLength(160);
-            builder.Property(e => e.CodigoCertificacao).HasMaxLength(120);
+            builder.Property(e => e.CodigoCertificacao).HasColumnName("Codigo_Certificacao").HasMaxLength(120);
             builder.Property(e => e.DataConclusao).HasColumnName("Data_Conclusao");
             builder.Property(e => e.DataValidade).HasColumnName("Data_Validade");
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
@@ -110,11 +117,13 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.MecanicoConfig
     {
         public void Configure(EntityTypeBuilder<MecanicoContato> builder)
         {
-            builder.ToTable("mecanico_contatos");
+            builder.ToTable("cad_mecanicos_contatos");
             builder.HasKey(e => e.Id);
 
+            builder.Property(e => e.MecanicoId).HasColumnName("Mecanico_Id");
             builder.Property(e => e.Tipo).HasMaxLength(50).IsRequired();
             builder.Property(e => e.Valor).HasMaxLength(160).IsRequired();
+            builder.Property(e => e.Principal).HasDefaultValue(false);
             builder.Property(e => e.Observacao).HasMaxLength(240);
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
             builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
@@ -130,12 +139,14 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.MecanicoConfig
     {
         public void Configure(EntityTypeBuilder<MecanicoDisponibilidade> builder)
         {
-            builder.ToTable("mecanico_disponibilidades");
+            builder.ToTable("cad_mecanicos_disponibilidades");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.DiaSemana).IsRequired();
+            builder.Property(e => e.MecanicoId).HasColumnName("Mecanico_Id");
+            builder.Property(e => e.DiaSemana).HasColumnName("Dia_Semana").IsRequired();
             builder.Property(e => e.HoraInicio).HasColumnName("Hora_Inicio");
             builder.Property(e => e.HoraFim).HasColumnName("Hora_Fim");
+            builder.Property(e => e.CapacidadeAtendimentos).HasColumnName("Capacidade_Atendimentos").HasDefaultValue(5);
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
             builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
 
@@ -150,13 +161,14 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.MecanicoConfig
     {
         public void Configure(EntityTypeBuilder<MecanicoDocumento> builder)
         {
-            builder.ToTable("mecanico_documentos");
+            builder.ToTable("cad_mecanicos_documentos");
             builder.HasKey(e => e.Id);
 
+            builder.Property(e => e.MecanicoId).HasColumnName("Mecanico_Id");
             builder.Property(e => e.Tipo).HasMaxLength(100).IsRequired();
             builder.Property(e => e.Numero).HasMaxLength(120).IsRequired();
-            builder.Property(e => e.OrgaoExpedidor).HasMaxLength(120);
-            builder.Property(e => e.ArquivoUrl).HasMaxLength(500);
+            builder.Property(e => e.OrgaoExpedidor).HasColumnName("Orgao_Expedidor").HasMaxLength(120);
+            builder.Property(e => e.ArquivoUrl).HasColumnName("Arquivo_Url").HasMaxLength(500);
             builder.Property(e => e.DataEmissao).HasColumnName("Data_Emissao");
             builder.Property(e => e.DataValidade).HasColumnName("Data_Validade");
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
@@ -173,9 +185,10 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.MecanicoConfig
     {
         public void Configure(EntityTypeBuilder<MecanicoEndereco> builder)
         {
-            builder.ToTable("mecanico_enderecos");
+            builder.ToTable("cad_mecanicos_enderecos");
             builder.HasKey(e => e.Id);
 
+            builder.Property(e => e.MecanicoId).HasColumnName("Mecanico_Id");
             builder.Property(e => e.Tipo).HasMaxLength(50).IsRequired();
             builder.Property(e => e.Cep).HasMaxLength(20).IsRequired();
             builder.Property(e => e.Logradouro).HasMaxLength(200).IsRequired();
@@ -185,6 +198,7 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.MecanicoConfig
             builder.Property(e => e.Estado).HasMaxLength(50).IsRequired();
             builder.Property(e => e.Pais).HasMaxLength(80);
             builder.Property(e => e.Complemento).HasMaxLength(120);
+            builder.Property(e => e.Principal).HasDefaultValue(false);
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
             builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
 
@@ -199,10 +213,13 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.MecanicoConfig
     {
         public void Configure(EntityTypeBuilder<MecanicoEspecialidadeRel> builder)
         {
-            builder.ToTable("mecanico_especialidades_rel");
+            builder.ToTable("cad_mecanicos_especialidades_rel");
             builder.HasKey(e => e.Id);
 
+            builder.Property(e => e.MecanicoId).HasColumnName("Mecanico_Id");
+            builder.Property(e => e.EspecialidadeId).HasColumnName("Especialidade_Id");
             builder.Property(e => e.Nivel).HasMaxLength(50).HasDefaultValue("Pleno");
+            builder.Property(e => e.Principal).HasDefaultValue(false);
             builder.Property(e => e.Anotacoes).HasMaxLength(300);
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
             builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
@@ -223,12 +240,13 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.MecanicoConfig
     {
         public void Configure(EntityTypeBuilder<MecanicoExperiencia> builder)
         {
-            builder.ToTable("mecanico_experiencias");
+            builder.ToTable("cad_mecanicos_experiencias");
             builder.HasKey(e => e.Id);
 
+            builder.Property(e => e.MecanicoId).HasColumnName("Mecanico_Id");
             builder.Property(e => e.Empresa).HasMaxLength(200).IsRequired();
             builder.Property(e => e.Cargo).HasMaxLength(160).IsRequired();
-            builder.Property(e => e.ResumoAtividades).HasMaxLength(500);
+            builder.Property(e => e.ResumoAtividades).HasColumnName("Resumo_Atividades").HasMaxLength(500);
             builder.Property(e => e.DataInicio).HasColumnName("Data_Inicio");
             builder.Property(e => e.DataFim).HasColumnName("Data_Fim");
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");

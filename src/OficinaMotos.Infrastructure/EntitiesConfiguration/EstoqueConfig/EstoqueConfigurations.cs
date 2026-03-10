@@ -11,10 +11,10 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.EstoqueConfig
             builder.ToTable("est_categorias");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Nome).HasMaxLength(160).IsRequired();
-            builder.Property(e => e.Descricao).HasMaxLength(300);
-            builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
-            builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
+            builder.Property(e => e.Nome).HasColumnName("nome").HasMaxLength(160).IsRequired();
+            builder.Property(e => e.Descricao).HasColumnName("descricao").HasMaxLength(300);
+            builder.Property(e => e.CreatedAt).HasColumnName("created_at");
+            builder.Property(e => e.UpdatedAt).HasColumnName("updated_at");
 
             builder.HasMany(e => e.Pecas)
                    .WithOne(p => p.Categoria)
@@ -30,11 +30,11 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.EstoqueConfig
             builder.ToTable("est_fabricantes");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Nome).HasMaxLength(160).IsRequired();
-            builder.Property(e => e.Cnpj).HasMaxLength(32);
-            builder.Property(e => e.Contato).HasMaxLength(160);
-            builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
-            builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
+            builder.Property(e => e.Nome).HasColumnName("nome").HasMaxLength(160).IsRequired();
+            builder.Property(e => e.Cnpj).HasColumnName("cnpj").HasMaxLength(32);
+            builder.Property(e => e.Contato).HasColumnName("contato").HasMaxLength(160);
+            builder.Property(e => e.CreatedAt).HasColumnName("created_at");
+            builder.Property(e => e.UpdatedAt).HasColumnName("updated_at");
 
             builder.HasMany(e => e.Pecas)
                    .WithOne(p => p.Fabricante)
@@ -50,11 +50,11 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.EstoqueConfig
             builder.ToTable("est_localizacoes");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Descricao).HasMaxLength(200).IsRequired();
-            builder.Property(e => e.Corredor).HasMaxLength(50);
-            builder.Property(e => e.Prateleira).HasMaxLength(50);
-            builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
-            builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
+            builder.Property(e => e.Descricao).HasColumnName("descricao").HasMaxLength(200).IsRequired();
+            builder.Property(e => e.Corredor).HasColumnName("corredor").HasMaxLength(50);
+            builder.Property(e => e.Prateleira).HasColumnName("prateleira").HasMaxLength(50);
+            builder.Property(e => e.CreatedAt).HasColumnName("created_at");
+            builder.Property(e => e.UpdatedAt).HasColumnName("updated_at");
 
             builder.HasMany(e => e.Pecas)
                    .WithOne(p => p.Localizacao)
@@ -70,14 +70,21 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.EstoqueConfig
             builder.ToTable("est_pecas");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Codigo).HasMaxLength(80).IsRequired();
-            builder.Property(e => e.Descricao).HasMaxLength(240).IsRequired();
-            builder.Property(e => e.Unidade).HasMaxLength(10).HasDefaultValue("UN");
-            builder.Property(e => e.Status).HasMaxLength(50).HasDefaultValue("Ativo");
-            builder.Property(e => e.Observacoes).HasMaxLength(500);
-            builder.Property(e => e.DataCadastro).HasColumnName("Data_Cadastro");
-            builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
-            builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
+            builder.Property(e => e.Codigo).HasColumnName("codigo").HasMaxLength(80).IsRequired();
+            builder.Property(e => e.Descricao).HasColumnName("descricao").HasMaxLength(240).IsRequired();
+            builder.Property(e => e.FabricanteId).HasColumnName("fabricante_id");
+            builder.Property(e => e.CategoriaId).HasColumnName("categoria_id");
+            builder.Property(e => e.LocalizacaoId).HasColumnName("localizacao_id");
+            builder.Property(e => e.PrecoUnitario).HasColumnName("preco_unitario").HasPrecision(18, 2).IsRequired();
+            builder.Property(e => e.Quantidade).HasColumnName("quantidade").IsRequired();
+            builder.Property(e => e.EstoqueMinimo).HasColumnName("estoque_minimo").HasDefaultValue(0);
+            builder.Property(e => e.EstoqueMaximo).HasColumnName("estoque_maximo").HasDefaultValue(0);
+            builder.Property(e => e.Unidade).HasColumnName("unidade").HasMaxLength(10).HasDefaultValue("UN");
+            builder.Property(e => e.Status).HasColumnName("status").HasMaxLength(50).HasDefaultValue("Ativo");
+            builder.Property(e => e.Observacoes).HasColumnName("observacoes").HasMaxLength(500);
+            builder.Property(e => e.DataCadastro).HasColumnName("data_cadastro");
+            builder.Property(e => e.CreatedAt).HasColumnName("created_at");
+            builder.Property(e => e.UpdatedAt).HasColumnName("updated_at");
 
             builder.HasOne(e => e.Fabricante)
                    .WithMany(f => f.Pecas)
@@ -119,12 +126,14 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.EstoqueConfig
             builder.ToTable("est_movimentacoes");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Tipo).HasMaxLength(50).IsRequired();
-            builder.Property(e => e.Referencia).HasMaxLength(120);
-            builder.Property(e => e.Usuario).HasMaxLength(120);
-            builder.Property(e => e.DataMovimentacao).HasColumnName("Data_Movimentacao");
-            builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
-            builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
+            builder.Property(e => e.PecaId).HasColumnName("peca_id");
+            builder.Property(e => e.Quantidade).HasColumnName("quantidade").IsRequired();
+            builder.Property(e => e.Tipo).HasColumnName("tipo").HasMaxLength(50).IsRequired();
+            builder.Property(e => e.Referencia).HasColumnName("referencia").HasMaxLength(120);
+            builder.Property(e => e.Usuario).HasColumnName("usuario").HasMaxLength(120);
+            builder.Property(e => e.DataMovimentacao).HasColumnName("data_movimentacao");
+            builder.Property(e => e.CreatedAt).HasColumnName("created_at");
+            builder.Property(e => e.UpdatedAt).HasColumnName("updated_at");
 
             builder.HasOne(e => e.Peca)
                    .WithMany(p => p.Movimentacoes)
@@ -140,13 +149,14 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.EstoqueConfig
             builder.ToTable("est_pecas_anexos");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Nome).HasMaxLength(200);
-            builder.Property(e => e.Tipo).HasMaxLength(100);
-            builder.Property(e => e.Url).HasMaxLength(500);
-            builder.Property(e => e.Observacao).HasMaxLength(240);
-            builder.Property(e => e.DataUpload).HasColumnName("Data_Upload");
-            builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
-            builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
+            builder.Property(e => e.PecaId).HasColumnName("peca_id");
+            builder.Property(e => e.Nome).HasColumnName("nome").HasMaxLength(200);
+            builder.Property(e => e.Tipo).HasColumnName("tipo").HasMaxLength(100);
+            builder.Property(e => e.Url).HasColumnName("url").HasMaxLength(500);
+            builder.Property(e => e.Observacao).HasColumnName("observacao").HasMaxLength(240);
+            builder.Property(e => e.DataUpload).HasColumnName("data_upload");
+            builder.Property(e => e.CreatedAt).HasColumnName("created_at");
+            builder.Property(e => e.UpdatedAt).HasColumnName("updated_at");
 
             builder.HasOne(e => e.Peca)
                    .WithMany(p => p.Anexos)
@@ -162,9 +172,13 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.EstoqueConfig
             builder.ToTable("est_pecas_fornecedores");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Observacao).HasMaxLength(240);
-            builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
-            builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
+            builder.Property(e => e.PecaId).HasColumnName("peca_id");
+            builder.Property(e => e.FornecedorId).HasColumnName("fornecedor_id");
+            builder.Property(e => e.Preco).HasColumnName("preco").HasPrecision(18, 2);
+            builder.Property(e => e.PrazoEntrega).HasColumnName("prazo_entrega");
+            builder.Property(e => e.Observacao).HasColumnName("observacao").HasMaxLength(240);
+            builder.Property(e => e.CreatedAt).HasColumnName("created_at");
+            builder.Property(e => e.UpdatedAt).HasColumnName("updated_at");
 
             builder.HasOne(e => e.Peca)
                    .WithMany(p => p.Fornecedores)
@@ -185,13 +199,14 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.EstoqueConfig
             builder.ToTable("est_pecas_historico");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Usuario).HasMaxLength(120);
-            builder.Property(e => e.Campo).HasMaxLength(120);
-            builder.Property(e => e.ValorAntigo).HasMaxLength(300);
-            builder.Property(e => e.ValorNovo).HasMaxLength(300);
-            builder.Property(e => e.DataAlteracao).HasColumnName("Data_Alteracao");
-            builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
-            builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
+            builder.Property(e => e.PecaId).HasColumnName("peca_id");
+            builder.Property(e => e.Usuario).HasColumnName("usuario").HasMaxLength(120);
+            builder.Property(e => e.Campo).HasColumnName("campo").HasMaxLength(120);
+            builder.Property(e => e.ValorAntigo).HasColumnName("valor_antigo").HasMaxLength(300);
+            builder.Property(e => e.ValorNovo).HasColumnName("valor_novo").HasMaxLength(300);
+            builder.Property(e => e.DataAlteracao).HasColumnName("data_alteracao");
+            builder.Property(e => e.CreatedAt).HasColumnName("created_at");
+            builder.Property(e => e.UpdatedAt).HasColumnName("updated_at");
 
             builder.HasOne(e => e.Peca)
                    .WithMany(p => p.Historico)

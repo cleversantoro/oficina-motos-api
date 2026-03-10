@@ -163,9 +163,10 @@ namespace OficinaMotos.Domain.Entities
 
     public enum ClienteStatus
     {
+        Inativo = 0,
         Ativo = 1,
-        Inativo = 2,
-        Suspenso = 3
+        Suspenso = 2,
+        Bloqueado = 3
     }
 
     public enum ClienteOrigemEnum

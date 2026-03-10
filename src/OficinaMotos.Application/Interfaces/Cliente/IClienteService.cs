@@ -8,6 +8,7 @@ namespace OficinaMotos.Application.Interfaces.Cliente
     public interface IClienteService
     {
         Task<List<ClienteResponseDTO>> GetAllAsync();
+        Task<List<ClienteResponseTableDTO>> GetAllForTableAsync();
         Task<ClienteResponseDTO?> GetByIdAsync(long id);
         Task<ClienteResponseDTO> CreateAsync(CreateClienteDTO request);
         Task<ClienteResponseDTO?> UpdateAsync(long id, UpdateClienteDTO request);

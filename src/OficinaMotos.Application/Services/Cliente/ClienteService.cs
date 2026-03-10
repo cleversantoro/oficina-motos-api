@@ -28,6 +28,12 @@ namespace OficinaMotos.Application.Services.Cliente
             return _mapper.Map<List<ClienteResponseDTO>>(clientes);
         }
 
+        public async Task<List<ClienteResponseTableDTO>> GetAllForTableAsync()
+        {
+            var clientes = await _repository.GetAllForTableAsync();
+            return _mapper.Map<List<ClienteResponseTableDTO>>(clientes);
+        }
+
         public async Task<ClienteResponseDTO?> GetByIdAsync(long id)
         {
             var cliente = await _repository.GetByIdAsync(id);
@@ -76,5 +82,6 @@ namespace OficinaMotos.Application.Services.Cliente
             await _repository.DeleteAsync(id);
             return true;
         }
+
     }
 }

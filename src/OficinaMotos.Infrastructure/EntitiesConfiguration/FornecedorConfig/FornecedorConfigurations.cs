@@ -8,12 +8,13 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.FornecedorConfig
     {
         public void Configure(EntityTypeBuilder<FornecedorSegmento> builder)
         {
-            builder.ToTable("fornecedor_segmentos");
+            builder.ToTable("cad_fornecedores_segmentos");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Codigo).HasMaxLength(40).IsRequired();
-            builder.Property(e => e.Nome).HasMaxLength(160).IsRequired();
-            builder.Property(e => e.Descricao).HasMaxLength(300);
+            builder.Property(e => e.Codigo).HasColumnName("Codigo").HasMaxLength(40).IsRequired();
+            builder.Property(e => e.Nome).HasColumnName("Nome").HasMaxLength(160).IsRequired();
+            builder.Property(e => e.Descricao).HasColumnName("Descricao").HasMaxLength(300);
+            builder.Property(e => e.Ativo).HasColumnName("Ativo").HasDefaultValue(true);
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
             builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
 
@@ -32,24 +33,31 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.FornecedorConfig
     {
         public void Configure(EntityTypeBuilder<Fornecedor> builder)
         {
-            builder.ToTable("fornecedores");
+            builder.ToTable("cad_fornecedores");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Codigo).HasMaxLength(40).IsRequired();
-            builder.Property(e => e.Tipo).HasMaxLength(50).IsRequired();
-            builder.Property(e => e.RazaoSocial).HasMaxLength(200).IsRequired();
-            builder.Property(e => e.NomeFantasia).HasMaxLength(200).IsRequired();
-            builder.Property(e => e.Documento).HasMaxLength(32).IsRequired();
-            builder.Property(e => e.InscricaoEstadual).HasMaxLength(50);
-            builder.Property(e => e.InscricaoMunicipal).HasMaxLength(50);
-            builder.Property(e => e.Website).HasMaxLength(200);
-            builder.Property(e => e.Email).HasMaxLength(160);
-            builder.Property(e => e.TelefonePrincipal).HasMaxLength(40);
-            builder.Property(e => e.Status).HasMaxLength(50).HasDefaultValue("ATIVO");
-            builder.Property(e => e.CondicaoPagamentoPadrao).HasMaxLength(120);
-            builder.Property(e => e.Observacoes).HasMaxLength(500);
-            builder.Property(e => e.PrazoGarantiaPadrao).HasMaxLength(120);
-            builder.Property(e => e.TermosNegociados).HasMaxLength(500);
+            builder.Property(e => e.Codigo).HasColumnName("Codigo").HasMaxLength(40).IsRequired();
+            builder.Property(e => e.Tipo).HasColumnName("Tipo").HasMaxLength(50).IsRequired();
+            builder.Property(e => e.RazaoSocial).HasColumnName("Razao_Social").HasMaxLength(200).IsRequired();
+            builder.Property(e => e.NomeFantasia).HasColumnName("Nome_Fantasia").HasMaxLength(200);
+            builder.Property(e => e.Documento).HasColumnName("Documento").HasMaxLength(32).IsRequired();
+            builder.Property(e => e.InscricaoEstadual).HasColumnName("Inscricao_Estadual").HasMaxLength(50);
+            builder.Property(e => e.InscricaoMunicipal).HasColumnName("Inscricao_Municipal").HasMaxLength(50);
+            builder.Property(e => e.SegmentoPrincipalId).HasColumnName("Segmento_Principal_Id");
+            builder.Property(e => e.Website).HasColumnName("Website").HasMaxLength(200);
+            builder.Property(e => e.Email).HasColumnName("Email").HasMaxLength(160);
+            builder.Property(e => e.TelefonePrincipal).HasColumnName("Telefone_Principal").HasMaxLength(40);
+            builder.Property(e => e.Status).HasColumnName("Status").HasMaxLength(50).HasDefaultValue("ATIVO");
+            builder.Property(e => e.CondicaoPagamentoPadrao).HasColumnName("Condicao_Pagamento_Padrao").HasMaxLength(120);
+            builder.Property(e => e.PrazoEntregaMedio).HasColumnName("Prazo_Entrega_Medio");
+            builder.Property(e => e.NotaMedia).HasColumnName("Nota_Media").HasPrecision(4, 2);
+            builder.Property(e => e.Observacoes).HasColumnName("Observacoes").HasMaxLength(600);
+            builder.Property(e => e.PrazoGarantiaPadrao).HasColumnName("Prazo_Garantia_Padrao").HasMaxLength(120);
+            builder.Property(e => e.TermosNegociados).HasColumnName("Termos_Negociados").HasMaxLength(240);
+            builder.Property(e => e.AtendimentoPersonalizado).HasColumnName("Atendimento_Personalizado").HasDefaultValue(false);
+            builder.Property(e => e.RetiradaLocal).HasColumnName("Retirada_Local").HasDefaultValue(false);
+            builder.Property(e => e.RatingLogistica).HasColumnName("Rating_Logistica").HasPrecision(4, 2);
+            builder.Property(e => e.RatingQualidade).HasColumnName("Rating_Qualidade").HasPrecision(4, 2);
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
             builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
 
@@ -91,10 +99,13 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.FornecedorConfig
     {
         public void Configure(EntityTypeBuilder<FornecedorSegmentoRel> builder)
         {
-            builder.ToTable("fornecedor_segmentos_rel");
+            builder.ToTable("cad_fornecedores_segmentos_rel");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Observacoes).HasMaxLength(300);
+            builder.Property(e => e.FornecedorId).HasColumnName("Fornecedor_Id");
+            builder.Property(e => e.SegmentoId).HasColumnName("Segmento_Id");
+            builder.Property(e => e.Principal).HasColumnName("Principal").HasDefaultValue(false);
+            builder.Property(e => e.Observacoes).HasColumnName("Observacoes").HasMaxLength(300);
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
             builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
 
@@ -114,19 +125,21 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.FornecedorConfig
     {
         public void Configure(EntityTypeBuilder<FornecedorEndereco> builder)
         {
-            builder.ToTable("fornecedor_enderecos");
+            builder.ToTable("cad_fornecedores_enderecos");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Tipo).HasMaxLength(50).IsRequired();
-            builder.Property(e => e.Cep).HasMaxLength(20);
-            builder.Property(e => e.Logradouro).HasMaxLength(200).IsRequired();
-            builder.Property(e => e.Numero).HasMaxLength(20).IsRequired();
-            builder.Property(e => e.Bairro).HasMaxLength(120).IsRequired();
-            builder.Property(e => e.Cidade).HasMaxLength(120).IsRequired();
-            builder.Property(e => e.Estado).HasMaxLength(50).IsRequired();
-            builder.Property(e => e.Pais).HasMaxLength(80);
-            builder.Property(e => e.Complemento).HasMaxLength(120);
-            builder.Property(e => e.Observacao).HasMaxLength(240);
+            builder.Property(e => e.FornecedorId).HasColumnName("Fornecedor_Id");
+            builder.Property(e => e.Tipo).HasColumnName("Tipo").HasMaxLength(50).IsRequired();
+            builder.Property(e => e.Cep).HasColumnName("Cep").HasMaxLength(20);
+            builder.Property(e => e.Logradouro).HasColumnName("Logradouro").HasMaxLength(200).IsRequired();
+            builder.Property(e => e.Numero).HasColumnName("Numero").HasMaxLength(20).IsRequired();
+            builder.Property(e => e.Bairro).HasColumnName("Bairro").HasMaxLength(120).IsRequired();
+            builder.Property(e => e.Cidade).HasColumnName("Cidade").HasMaxLength(120).IsRequired();
+            builder.Property(e => e.Estado).HasColumnName("Estado").HasMaxLength(50).IsRequired();
+            builder.Property(e => e.Pais).HasColumnName("Pais").HasMaxLength(80);
+            builder.Property(e => e.Complemento).HasColumnName("Complemento").HasMaxLength(120);
+            builder.Property(e => e.Principal).HasColumnName("Principal").HasDefaultValue(false);
+            builder.Property(e => e.Observacao).HasColumnName("Observacao").HasMaxLength(240);
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
             builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
 
@@ -141,12 +154,14 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.FornecedorConfig
     {
         public void Configure(EntityTypeBuilder<FornecedorContato> builder)
         {
-            builder.ToTable("fornecedor_contatos");
+            builder.ToTable("cad_fornecedores_contatos");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Tipo).HasMaxLength(50).IsRequired();
-            builder.Property(e => e.Valor).HasMaxLength(160).IsRequired();
-            builder.Property(e => e.Observacao).HasMaxLength(240);
+            builder.Property(e => e.FornecedorId).HasColumnName("Fornecedor_Id");
+            builder.Property(e => e.Tipo).HasColumnName("Tipo").HasMaxLength(50).IsRequired();
+            builder.Property(e => e.Valor).HasColumnName("Valor").HasMaxLength(160).IsRequired();
+            builder.Property(e => e.Principal).HasColumnName("Principal").HasDefaultValue(false);
+            builder.Property(e => e.Observacao).HasColumnName("Observacao").HasMaxLength(240);
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
             builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
 
@@ -161,16 +176,18 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.FornecedorConfig
     {
         public void Configure(EntityTypeBuilder<FornecedorRepresentante> builder)
         {
-            builder.ToTable("fornecedor_representantes");
+            builder.ToTable("cad_fornecedores_representantes");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Nome).HasMaxLength(160).IsRequired();
-            builder.Property(e => e.Cargo).HasMaxLength(100);
-            builder.Property(e => e.Email).HasMaxLength(160);
-            builder.Property(e => e.Telefone).HasMaxLength(40);
-            builder.Property(e => e.Celular).HasMaxLength(40);
-            builder.Property(e => e.PreferenciaContato).HasMaxLength(60);
-            builder.Property(e => e.Observacoes).HasMaxLength(500);
+            builder.Property(e => e.FornecedorId).HasColumnName("Fornecedor_Id");
+            builder.Property(e => e.Nome).HasColumnName("Nome").HasMaxLength(160).IsRequired();
+            builder.Property(e => e.Cargo).HasColumnName("Cargo").HasMaxLength(100);
+            builder.Property(e => e.Email).HasColumnName("Email").HasMaxLength(160);
+            builder.Property(e => e.Telefone).HasColumnName("Telefone").HasMaxLength(40);
+            builder.Property(e => e.Celular).HasColumnName("Celular").HasMaxLength(40);
+            builder.Property(e => e.PreferenciaContato).HasColumnName("Preferencia_Contato").HasMaxLength(60);
+            builder.Property(e => e.Principal).HasColumnName("Principal").HasDefaultValue(false);
+            builder.Property(e => e.Observacoes).HasColumnName("Observacoes").HasMaxLength(240);
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
             builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
 
@@ -185,16 +202,18 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.FornecedorConfig
     {
         public void Configure(EntityTypeBuilder<FornecedorBanco> builder)
         {
-            builder.ToTable("fornecedor_bancos");
+            builder.ToTable("cad_fornecedores_bancos");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Banco).HasMaxLength(120).IsRequired();
-            builder.Property(e => e.Agencia).HasMaxLength(30);
-            builder.Property(e => e.Conta).HasMaxLength(30);
-            builder.Property(e => e.Digito).HasMaxLength(5);
-            builder.Property(e => e.TipoConta).HasMaxLength(50);
-            builder.Property(e => e.PixChave).HasMaxLength(160);
-            builder.Property(e => e.Observacoes).HasMaxLength(240);
+            builder.Property(e => e.FornecedorId).HasColumnName("Fornecedor_Id");
+            builder.Property(e => e.Banco).HasColumnName("Banco").HasMaxLength(120).IsRequired();
+            builder.Property(e => e.Agencia).HasColumnName("Agencia").HasMaxLength(30);
+            builder.Property(e => e.Conta).HasColumnName("Conta").HasMaxLength(30);
+            builder.Property(e => e.Digito).HasColumnName("Digito").HasMaxLength(5);
+            builder.Property(e => e.TipoConta).HasColumnName("Tipo_Conta").HasMaxLength(50);
+            builder.Property(e => e.PixChave).HasColumnName("Pix_Chave").HasMaxLength(160);
+            builder.Property(e => e.Principal).HasColumnName("Principal").HasDefaultValue(false);
+            builder.Property(e => e.Observacoes).HasColumnName("Observacoes").HasMaxLength(240);
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
             builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
 
@@ -209,14 +228,15 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.FornecedorConfig
     {
         public void Configure(EntityTypeBuilder<FornecedorDocumento> builder)
         {
-            builder.ToTable("fornecedor_documentos");
+            builder.ToTable("cad_fornecedores_documentos");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Tipo).HasMaxLength(100).IsRequired();
-            builder.Property(e => e.Numero).HasMaxLength(120).IsRequired();
-            builder.Property(e => e.OrgaoExpedidor).HasMaxLength(120);
-            builder.Property(e => e.ArquivoUrl).HasMaxLength(500);
-            builder.Property(e => e.Observacoes).HasMaxLength(240);
+            builder.Property(e => e.FornecedorId).HasColumnName("Fornecedor_Id");
+            builder.Property(e => e.Tipo).HasColumnName("Tipo").HasMaxLength(100).IsRequired();
+            builder.Property(e => e.Numero).HasColumnName("Numero").HasMaxLength(120).IsRequired();
+            builder.Property(e => e.OrgaoExpedidor).HasColumnName("Orgao_Expedidor").HasMaxLength(120);
+            builder.Property(e => e.ArquivoUrl).HasColumnName("Arquivo_Url").HasMaxLength(240);
+            builder.Property(e => e.Observacoes).HasColumnName("Observacoes").HasMaxLength(240);
             builder.Property(e => e.DataEmissao).HasColumnName("Data_Emissao");
             builder.Property(e => e.DataValidade).HasColumnName("Data_Validade");
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
@@ -233,13 +253,14 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.FornecedorConfig
     {
         public void Configure(EntityTypeBuilder<FornecedorCertificacao> builder)
         {
-            builder.ToTable("fornecedor_certificacoes");
+            builder.ToTable("cad_fornecedores_certificacoes");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Titulo).HasMaxLength(160).IsRequired();
-            builder.Property(e => e.Instituicao).HasMaxLength(160);
-            builder.Property(e => e.CodigoCertificacao).HasMaxLength(120);
-            builder.Property(e => e.Escopo).HasMaxLength(240);
+            builder.Property(e => e.FornecedorId).HasColumnName("Fornecedor_Id");
+            builder.Property(e => e.Titulo).HasColumnName("Titulo").HasMaxLength(160).IsRequired();
+            builder.Property(e => e.Instituicao).HasColumnName("Instituicao").HasMaxLength(160);
+            builder.Property(e => e.CodigoCertificacao).HasColumnName("Codigo_Certificacao").HasMaxLength(60);
+            builder.Property(e => e.Escopo).HasColumnName("Escopo").HasMaxLength(200);
             builder.Property(e => e.DataEmissao).HasColumnName("Data_Emissao");
             builder.Property(e => e.DataValidade).HasColumnName("Data_Validade");
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
@@ -256,13 +277,15 @@ namespace OficinaMotos.Infrastructure.EntitiesConfiguration.FornecedorConfig
     {
         public void Configure(EntityTypeBuilder<FornecedorAvaliacao> builder)
         {
-            builder.ToTable("fornecedor_avaliacoes");
+            builder.ToTable("cad_fornecedores_avaliacoes");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.AvaliadoPor).HasMaxLength(160);
-            builder.Property(e => e.Categoria).HasMaxLength(100);
-            builder.Property(e => e.Comentarios).HasMaxLength(500);
-            builder.Property(e => e.DataAvaliacao).HasColumnName("Data_Avaliacao");
+            builder.Property(e => e.FornecedorId).HasColumnName("Fornecedor_Id");
+            builder.Property(e => e.DataAvaliacao).HasColumnName("Data_Avaliacao").IsRequired();
+            builder.Property(e => e.AvaliadoPor).HasColumnName("Avaliado_Por").HasMaxLength(120);
+            builder.Property(e => e.Categoria).HasColumnName("Categoria").HasMaxLength(60);
+            builder.Property(e => e.Nota).HasColumnName("Nota").HasPrecision(4, 2).IsRequired();
+            builder.Property(e => e.Comentarios).HasColumnName("Comentarios").HasMaxLength(400);
             builder.Property(e => e.CreatedAt).HasColumnName("Created_At");
             builder.Property(e => e.UpdatedAt).HasColumnName("Updated_At");
 

@@ -63,7 +63,7 @@ namespace OficinaMotos.Domain.Entities
         public string Descricao { get; set; } = string.Empty;
         public int Quantidade { get; set; }
         public decimal ValorUnitario { get; set; }
-        public decimal Total => Quantidade * ValorUnitario;
+        public decimal Total { get; set; } //=> Quantidade * ValorUnitario;
     }
 
     public class OrdemServicoObservacao : BaseEntity

@@ -31,6 +31,17 @@ namespace OficinaMotos.API.Controllers.Cliente
         }
 
         /// <summary>
+        /// Retorna todos os clientes para tabelas
+        /// </summary>
+        [HttpGet("table")]
+        [ProducesResponseType(typeof(List<ClienteResponseTableDTO>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllForTable()
+        {
+            var clientes = await _clienteService.GetAllForTableAsync();
+            return Ok(clientes);
+        }
+
+        /// <summary>
         /// Busca um cliente pelo ID
         /// </summary>
         [HttpGet("{id}")]

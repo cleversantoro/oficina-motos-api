@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using OficinaMotos.Application.DTOs.Responses.Cliente;
 using OficinaMotos.Domain.Entities;
 using OficinaMotos.Domain.Interfaces.Repositories.ClienteRepo;
 using OficinaMotos.Infrastructure.Context;
@@ -59,6 +60,13 @@ namespace OficinaMotos.Infrastructure.Repositories.Cliente
         public async Task<ClienteEntity?> GetByEmailAsync(string email)
         {
             return await _dbSet.FirstOrDefaultAsync(c => c.Email == email);
+        }
+
+        public async Task<List<ClienteEntity>> GetAllForTableAsync()
+        {
+            return await _dbSet
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }
