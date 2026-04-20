@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using OficinaMotos.Domain.Interfaces.Repositories.SegurancaRepo;
+using OficinaMotos.Infrastructure.Repositories.SegurancaRepo;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OficinaMotos.Domain.Interfaces.Repositories;
@@ -89,6 +91,15 @@ namespace OficinaMotos.Infrastructure.IoC
             services.AddScoped<IVeiculoRepository, VeiculoRepository>();
             services.AddScoped<IVeiculoMarcaRepository, VeiculoMarcaRepository>();
             services.AddScoped<IVeiculoModeloRepository, VeiculoModeloRepository>();
+
+            // Segurança
+            services.AddScoped<ISegModuloRepository, SegModuloRepository>();
+            services.AddScoped<ISegPerfilRepository, SegPerfilRepository>();
+            services.AddScoped<ISegPermissaoRepository, SegPermissaoRepository>();
+            services.AddScoped<ISegPerfilPermissaoRepository, SegPerfilPermissaoRepository>();
+            services.AddScoped<ISegUsuarioRepository, SegUsuarioRepository>();
+            services.AddScoped<ISegUsuarioPerfilRepository, SegUsuarioPerfilRepository>();
+            services.AddScoped<ISegAuditLogRepository, SegAuditLogRepository>();
 
             return services;
         }

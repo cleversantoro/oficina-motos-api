@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OficinaMotos.Application.DTOs.Requests.Auth;
 using OficinaMotos.Application.DTOs.Responses.Auth;
+using OficinaMotos.Application.Interfaces.Seguranca;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -12,15 +13,12 @@ namespace OficinaMotos.API.Controllers.Auth
     [Route("api/v1/[controller]")]
     public class AuthController : ControllerBase
     {
+        private readonly IAuthService _authService;
         private readonly IConfiguration _configuration;
 
-        // Usuário administrador padrão para desenvolvimento.
-        // Em produção, substitua por consulta ao banco de dados com hash de senha.
-        private static readonly (string Email, string Password, string Name, string Role) _adminUser =
-            ("admin@oficina.com", "admin123", "Administrador", "Admin");
-
-        public AuthController(IConfiguration configuration)
+        public AuthController(IAuthService authService, IConfiguration configuration)
         {
+            _authService = authService;
             _configuration = configuration;
         }
 
@@ -31,31 +29,37 @@ namespace OficinaMotos.API.Controllers.Auth
         [ProducesResponseType(typeof(LoginResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public IActionResult Login([FromBody] LoginRequestDTO request)
+        public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
         {
             if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
-                return BadRequest(new { message = "E-mail e senha são obrigatórios." });
+                return BadRequest(new { message = "Login e senha são obrigatórios." });
 
-            // Validação de credenciais
-            if (!request.Email.Equals(_adminUser.Email, StringComparison.OrdinalIgnoreCase) ||
-                request.Password != _adminUser.Password)
-            {
-                return Unauthorized(new { message = "Credenciais inválidas." });
-            }
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var userAgent = Request.Headers.UserAgent.ToString();
+
+            var userInfo = await _authService.LoginAsync(request, ip, userAgent);
+            if (userInfo == null)
+                return Unauthorized(new { message = "Credenciais inválidas ou usuário bloqueado." });
 
             var jwtKey = _configuration["Jwt:Key"] ?? "chave_super_secreta_padrao_desenvolvimento_123";
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expiration = DateTime.UtcNow.AddHours(8);
 
-            var claims = new[]
+            var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, _adminUser.Email),
-                new Claim(JwtRegisteredClaimNames.Email, _adminUser.Email),
-                new Claim(ClaimTypes.Name, _adminUser.Name),
-                new Claim(ClaimTypes.Role, _adminUser.Role),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new(JwtRegisteredClaimNames.Sub, userInfo.UserId.ToString()),
+                new(JwtRegisteredClaimNames.Email, userInfo.Email),
+                new(JwtRegisteredClaimNames.UniqueName, userInfo.Login),
+                new(ClaimTypes.Name, userInfo.Nome),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
+
+            foreach (var role in userInfo.Roles)
+                claims.Add(new Claim(ClaimTypes.Role, role));
+
+            foreach (var permissao in userInfo.Permissions)
+                claims.Add(new Claim("permissao", permissao));
 
             var token = new JwtSecurityToken(
                 claims: claims,
@@ -66,10 +70,14 @@ namespace OficinaMotos.API.Controllers.Auth
             return Ok(new LoginResponseDTO
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
-                Email = _adminUser.Email,
-                Name = _adminUser.Name,
-                Role = _adminUser.Role,
+                Email = userInfo.Email,
+                Name = userInfo.Nome,
+                Role = userInfo.Roles.FirstOrDefault() ?? string.Empty,
                 ExpiresAt = expiration,
+                UserId = userInfo.UserId,
+                Login = userInfo.Login,
+                Roles = userInfo.Roles,
+                Permissions = userInfo.Permissions,
             });
         }
     }

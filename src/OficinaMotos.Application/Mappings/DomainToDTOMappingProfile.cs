@@ -1,3 +1,4 @@
+using OficinaMotos.Application.DTOs.Responses.Seguranca;
 using AutoMapper;
 using OficinaMotos.Application.DTOs.Requests;
 using OficinaMotos.Application.DTOs.Requests.Cliente;
@@ -7,6 +8,7 @@ using OficinaMotos.Application.DTOs.Requests.Fornecedor;
 using OficinaMotos.Application.DTOs.Requests.Mecanico;
 using OficinaMotos.Application.DTOs.Requests.OrdemServico;
 using OficinaMotos.Application.DTOs.Requests.Veiculo;
+using OficinaMotos.Application.DTOs.Requests.Seguranca;
 using OficinaMotos.Application.DTOs.Responses;
 using OficinaMotos.Application.DTOs.Responses.Cliente;
 using OficinaMotos.Application.DTOs.Responses.Estoque;
@@ -37,7 +39,7 @@ namespace OficinaMotos.Application.Mappings
             //.ForMember(dest => dest.PessoaFisica, opt => opt.MapFrom(src => new ClientePf { Cpf = src.Cpf }));
 
             CreateMap<Cliente, ClienteResponseTableDTO>()
-                .ForMember(dest => dest.TipoDescricao, opt => opt.MapFrom(src => (int)src.Tipo == 1 ? "Pessoa FÌsica" : "Pessoa JurÌdica"))
+                .ForMember(dest => dest.TipoDescricao, opt => opt.MapFrom(src => (int)src.Tipo == 1 ? "Pessoa FÔøΩsica" : "Pessoa JurÔøΩdica"))
                 .ForMember(dest => dest.StatusDescricao, opt => opt.MapFrom(src => (int)src.Status == 0 ? "Cliente Inativo" : GetStatus((int)src.Status))); 
                 //.ForMember(dest => dest.OrigemDescricao, opt => opt.MapFrom(src => src.Origem != null ? src.Origem.Nome : null));
 
@@ -205,6 +207,29 @@ namespace OficinaMotos.Application.Mappings
 
             CreateMap<VeiculoModelo, VeiculoModeloResponseDTO>();
             CreateMap<CreateVeiculoModeloDTO, VeiculoModelo>();
+
+            // Seguran√ßa
+            CreateMap<SegModulo, SegModuloResponseDTO>();
+            CreateMap<CreateSegModuloDTO, SegModulo>();
+
+            CreateMap<SegPerfil, SegPerfilResponseDTO>()
+                .ForMember(dest => dest.Permissoes, opt => opt.MapFrom(src =>
+                    src.PerfisPermissoes.Select(pp => pp.Permissao)));
+
+            CreateMap<CreateSegPerfilDTO, SegPerfil>();
+
+            CreateMap<SegPermissao, SegPermissaoResponseDTO>()
+                .ForMember(dest => dest.NomeModulo, opt => opt.MapFrom(src => src.Modulo != null ? src.Modulo.Nome : string.Empty));
+            CreateMap<CreateSegPermissaoDTO, SegPermissao>();
+
+            CreateMap<SegUsuario, SegUsuarioResponseDTO>()
+                .ForMember(dest => dest.Perfis, opt => opt.MapFrom(src =>
+                    src.UsuariosPerfis.Select(up => up.Perfil)));
+            CreateMap<SegUsuario, SegUsuarioTableDTO>();
+
+            CreateMap<SegPerfil, SegPerfilResumoDTO>();
+
+            CreateMap<SegAuditLog, SegAuditLogResponseDTO>();
         }
 
         private string GetStatus(int status)

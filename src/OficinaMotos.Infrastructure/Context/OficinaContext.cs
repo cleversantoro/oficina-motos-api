@@ -65,6 +65,15 @@ namespace OficinaMotos.Infrastructure.Context
         public DbSet<VeiculoMarca> VeiculoMarcas { get; set; }
         public DbSet<VeiculoModelo> VeiculoModelos { get; set; }
 
+        // Segurança
+        public DbSet<SegModulo> SegModulos { get; set; }
+        public DbSet<SegPerfil> SegPerfis { get; set; }
+        public DbSet<SegPermissao> SegPermissoes { get; set; }
+        public DbSet<SegPerfilPermissao> SegPerfisPermissoes { get; set; }
+        public DbSet<SegUsuario> SegUsuarios { get; set; }
+        public DbSet<SegUsuarioPerfil> SegUsuariosPerfis { get; set; }
+        public DbSet<SegAuditLog> SegAuditLogs { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
